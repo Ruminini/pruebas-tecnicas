@@ -5,25 +5,18 @@ import { BookCard } from "./components/BookCard";
 import MultiRangeSlider from "./components/MultiRangeSlider";
 
 function App() {
-  const [available, setAvailable] = useState(
-    Library.library.map((item) => item.book)
-  );
-  const [wishlisted, setWishlisted] = useState([]);
+  const [library, setLibrary] = useState(Library.library.map((item) => item.book));
+  const [wishlistedISBNs, setWishlistedISBNs] = useState([]);
   const [pageRange, setPageRange] = useState({ min: 0, max: 999 });
   const [genre, setGenre] = useState('All');
 
   const maxPages = useMemo(() => {
-    return Math.max(...available.map((book) => book.pages));
-  }, []);
-
-  const genresNames = useMemo(() => {
-    return available.map((book) => book.genre );
+    return Math.max(...library.map((book) => book.pages));
   }, []);
 
   const getGenresQuantities = () => {
     const genresQuantities = {};
-    genresNames.map(name => genresQuantities[name] = 0);
-    available.map(book => inPageRange(book.pages) ? genresQuantities[book.genre] = 1 + genresQuantities[book.genre]: 0)
+    library.map(book =>  genresQuantities[book.genre] = isInPageRange(book) && !isWishlisted(book) ?  1 + (genresQuantities[book.genre] || 0):0)
     return genresQuantities
   }
 
@@ -33,32 +26,37 @@ function App() {
   }
 
   const toggleWishlisted = (book) => {
-    const index = wishlisted.indexOf(book);
+    const index = wishlistedISBNs.indexOf(book.ISBN);
     if (index === -1) {
-      setWishlisted([...wishlisted, book]);
-      setAvailable(available.filter((b) => b.ISBN != book.ISBN));
+      setWishlistedISBNs([...wishlistedISBNs, book.ISBN]);
     } else {
-      setWishlisted(wishlisted.filter((b) => b.ISBN != book.ISBN));
-      setAvailable([...available, book]);
+      setWishlistedISBNs(wishlistedISBNs.filter((ISBN) => ISBN != book.ISBN));
     }
   };
 
-  const inPageRange = (pages) => {
-    return pages >= pageRange.min && pages <= pageRange.max;
+  const isInPageRange = (book) => {
+    return book.pages >= pageRange.min && book.pages <= pageRange.max;
   };
 
+  const isWishlisted = (book) => {
+    return wishlistedISBNs.includes(book.ISBN);
+  }
+
+  const matchesGenre = (book) => {
+    return genre!='All' && book.genre != genre;
+  }
+
   const isHidden = (book) => {
-    if (wishlisted.includes(book)) return false;
-    if (!inPageRange(book.pages)) return true;
-    if (genre!='All' && book.genre != genre) return true;
+    if (isWishlisted(book)) return false;
+    if (!isInPageRange(book)) return true;
+    if (matchesGenre(book)) return true;
     return false;
   };
 
-  const getBooks = (library) => {
-    if (!library) return;
+  const getBooks = (wishlisted) => {
     return library.map(
       (book) =>
-        book && (
+        book && isWishlisted(book) == wishlisted && (
           <BookCard
             key={book.ISBN}
             hidden={isHidden(book)}
@@ -87,10 +85,10 @@ function App() {
         </select>
       </header>
       <main>
-        <section className="availableBooks">{getBooks(available)}</section>
+        <section className="availableBooks">{getBooks(false)}</section>
         <aside>
           lista libros elejidos
-          {getBooks(wishlisted)}
+          {getBooks(true)}
         </aside>
       </main>
     </>
