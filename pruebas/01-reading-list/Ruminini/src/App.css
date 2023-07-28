@@ -1,0 +1,35 @@
+/* #root {
+  max-width: 1280px;
+  margin: 0 auto;
+  text-align: center;
+  display: grid;
+} */
+
+header {
+  height: 300px;
+  width: 100vw;
+  /* background-color: aquamarine; */
+  display: block;
+  align-self: center
+}
+
+header > div.container {
+  height: 50px;
+}
+
+main {
+  display: grid;
+  border: 2px solid white;
+  width: fit-content;
+  display: flex;
+  flex-direction: row;
+}
+
+.availableBooks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 800px;
+  justify-items: center;
+  height: fit-content;
+  row-gap: 20px;
+}
