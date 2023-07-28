@@ -6,7 +6,10 @@ import MultiRangeSlider from "./components/MultiRangeSlider";
 
 function App() {
   const [library, setLibrary] = useState(Library.library.map((item) => item.book));
-  const [wishlistedISBNs, setWishlistedISBNs] = useState([]);
+  const [wishlistedISBNs, setWishlistedISBNs] = useState(() => {
+    const savedWishlist = window.localStorage.getItem('wishlistedISBNs');
+    return savedWishlist ? JSON.parse(savedWishlist) : [];
+  });
   const [pageRange, setPageRange] = useState({ min: 0, max: 999 });
   const [genre, setGenre] = useState('All');
 
@@ -27,11 +30,14 @@ function App() {
 
   const toggleWishlisted = (book) => {
     const index = wishlistedISBNs.indexOf(book.ISBN);
+    let newWishlist = [];
     if (index === -1) {
-      setWishlistedISBNs([...wishlistedISBNs, book.ISBN]);
+      newWishlist = [...wishlistedISBNs, book.ISBN];
     } else {
-      setWishlistedISBNs(wishlistedISBNs.filter((ISBN) => ISBN != book.ISBN));
+      newWishlist = wishlistedISBNs.filter((ISBN) => ISBN != book.ISBN);
     }
+    setWishlistedISBNs(newWishlist);
+    window.localStorage.setItem('wishlistedISBNs',JSON.stringify(newWishlist));
   };
 
   const isInPageRange = (book) => {
