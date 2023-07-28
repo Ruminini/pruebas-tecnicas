@@ -10,7 +10,7 @@ function App() {
   );
   const [wishlisted, setWishlisted] = useState([]);
   const [pageRange, setPageRange] = useState({ min: 0, max: 999 });
-  const [genre, setGenre] = useState(null);
+  const [genre, setGenre] = useState('All');
 
   const maxPages = useMemo(() => {
     return Math.max(...available.map((book) => book.pages));
@@ -20,14 +20,17 @@ function App() {
     return available.map((book) => book.genre );
   }, []);
 
-  console.log(genresNames)
+  const getGenresQuantities = () => {
+    const genresQuantities = {};
+    genresNames.map(name => genresQuantities[name] = 0);
+    available.map(book => inPageRange(book.pages) ? genresQuantities[book.genre] = 1 + genresQuantities[book.genre]: 0)
+    return genresQuantities
+  }
 
-  const genres = {};
-  useEffect(() => {
-    available.map(book => genres[book.genre] =  inPageRange(book.pages) ? 1 : 0 + genres[book.genre] || 0)
-    console.log(genres)
-    Object.keys(genres).map((b) => { console.log(b) })
-  }, [pageRange]);
+  const getGenres = () => {
+    const genresQuantities = getGenresQuantities();
+    return Object.keys(genresQuantities).map((g, id) => (<option value={g} disabled={genresQuantities[g]==0} key={id}>{`${g} (${genresQuantities[g]})`}</option>))
+  }
 
   const toggleWishlisted = (book) => {
     const index = wishlisted.indexOf(book);
@@ -47,7 +50,7 @@ function App() {
   const isHidden = (book) => {
     if (wishlisted.includes(book)) return false;
     if (!inPageRange(book.pages)) return true;
-    if (genre && book.genre != genre) return true;
+    if (genre!='All' && book.genre != genre) return true;
     return false;
   };
 
@@ -78,26 +81,9 @@ function App() {
             setPageRange({ min, max });
           }}
         />
-        <select id="genres">
-          {console.log("------")}
-          {console.log(genres)}
-          {console.log(Object.keys(genres))}
-          {
-          Object.keys(genres).map((b) => { console.log(b) })
-          }
-          {Object.keys(genres).map((key, i) =>
-            <option key={i} value={key}>{`${key} (${genres[key]})`}</option>
-          )}
-          {console.log("------")}
-          <option value={null}>All</option>
-          {/* <option value={genres.key(0)}>{genres[genres.key(0)]}</option>
-          <option value={genres.key(1)}>{genres[genres.key(1)]}</option>
-          <option value={genres.key(2)}>{genres[genres.key(2)]}</option>
-          <option value={genres.key(3)}>{genres[genres.key(3)]}</option> */}
-          {
-            // Object.entries(genres).map( ([k, v]) => <option key={k} value={k}>{`${k} (${v})`}</option> )
-          }
-          
+        <select id="genres" value={genre} onChange={e => setGenre(e.target.value)}>
+          <option value='All'>Todas</option>
+          {getGenres()}
         </select>
       </header>
       <main>
