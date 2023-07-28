@@ -19,7 +19,8 @@ function App() {
 
   const getGenresQuantities = () => {
     const genresQuantities = {};
-    library.map(book =>  genresQuantities[book.genre] = isInPageRange(book) && !isWishlisted(book) ?  1 + (genresQuantities[book.genre] || 0):0)
+    library.map(book =>  genresQuantities[book.genre] = 0)
+    library.map(book =>  (isInPageRange(book) && !isWishlisted(book)) && genresQuantities[book.genre]++)
     return genresQuantities
   }
 
