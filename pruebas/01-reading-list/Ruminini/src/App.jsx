@@ -26,7 +26,8 @@ function App() {
 
   const getGenres = () => {
     const genresQuantities = getGenresQuantities();
-    return Object.keys(genresQuantities).map((g, id) => (<option value={g} disabled={genresQuantities[g]==0} key={id}>{`${g} (${genresQuantities[g]})`}</option>))
+    const sortedKeys = Object.keys(genresQuantities).sort((a,b) => {return genresQuantities[b]-genresQuantities[a]})
+    return sortedKeys.map((g, id) => (<option value={g} disabled={genresQuantities[g]==0} key={id}>{`${g} (${genresQuantities[g]})`}</option>))
   }
 
   const toggleWishlisted = (book) => {
@@ -78,18 +79,19 @@ function App() {
     <>
       <header>
         <p>Filtros</p>
-
-        <MultiRangeSlider
-          min={0}
-          max={maxPages}
-          onChange={({ min, max }) => {
-            setPageRange({ min, max });
-          }}
-        />
-        <select id="genres" value={genre} onChange={e => setGenre(e.target.value)}>
-          <option value='All'>Todas</option>
-          {getGenres()}
-        </select>
+        <section id='filters'>
+          <MultiRangeSlider
+            min={0}
+            max={maxPages}
+            onChange={({ min, max }) => {
+              setPageRange({ min, max });
+            }}
+          />
+          <select id="genres" value={genre} onChange={e => setGenre(e.target.value)}>
+            <option value='All'>Todas</option>
+            {getGenres()}
+          </select>
+        </section>
       </header>
       <main>
         <section className="availableBooks">{getBooks(false)}</section>
