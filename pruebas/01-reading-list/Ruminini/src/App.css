@@ -1,20 +1,41 @@
-/* #root {
+#root {
   max-width: 1280px;
   margin: 0 auto;
   text-align: center;
   display: grid;
-} */
+  position: relative;
+}
 
 header {
   height: 300px;
-  width: 100vw;
+  width: 100%;
   /* background-color: aquamarine; */
   display: block;
-  align-self: center
+  text-align: start;
 }
 
-header > div.container {
-  height: 50px;
+#filters {
+  height: 100px;
+  justify-content: left;
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 40px;
+  text-align: center;
+}
+
+#filters > div {
+  width: 250px;
+}
+
+#genres_filter {
+  width: 200px;
+  height: 2rem;
+  text-align: center;
+  font-size: 1em;
+  border-radius: 7px;
+  border: 2px solid white;
+  margin-top: 10px;
 }
 
 main {

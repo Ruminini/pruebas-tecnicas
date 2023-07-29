@@ -14,7 +14,7 @@ function App() {
   const [genre, setGenre] = useState('All');
 
   const maxPages = useMemo(() => {
-    return Math.max(...library.map((book) => book.pages));
+    return Math.ceil(Math.max(...library.map((book) => book.pages))/250)*250;
   }, []);
 
   const getGenresQuantities = () => {
@@ -78,19 +78,27 @@ function App() {
   return (
     <>
       <header>
-        <p>Filtros</p>
+        <h1>9 libros disponibles</h1>
+        <h4>2 en la lista de lectura</h4>
         <section id='filters'>
-          <MultiRangeSlider
-            min={0}
-            max={maxPages}
-            onChange={({ min, max }) => {
-              setPageRange({ min, max });
-            }}
-          />
-          <select id="genres" value={genre} onChange={e => setGenre(e.target.value)}>
-            <option value='All'>Todas</option>
-            {getGenres()}
-          </select>
+          <div>
+            <h4>Filtrar por Paginas:</h4>
+            <MultiRangeSlider
+              id='pages_filter'
+              min={0}
+              max={maxPages}
+              onChange={({ min, max }) => {
+                setPageRange({ min, max });
+              }}
+            />
+          </div>
+          <div>
+            <h4>Filtrar por Genero:</h4>
+            <select id="genres_filter" value={genre} onChange={e => setGenre(e.target.value)}>
+              <option value='All'>Todos</option>
+              {getGenres()}
+            </select>
+          </div>
         </section>
       </header>
       <main>

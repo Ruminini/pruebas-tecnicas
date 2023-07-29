@@ -1,7 +1,8 @@
 .container {
-    height: 100vh;
+    height: 35px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
+    padding-top: 10px;
     justify-content: center;
   }
   
@@ -37,16 +38,16 @@
   .slider__left-value,
   .slider__right-value {
     color: #dee2e6;
-    font-size: 12px;
+    font-size: 1em;
     margin-top: 20px;
   }
   
   .slider__left-value {
-    left: 6px;
+    left: 2px;
   }
   
   .slider__right-value {
-    right: -4px;
+    right: 4px;
   }
   
   /* Removing the default appearance */
